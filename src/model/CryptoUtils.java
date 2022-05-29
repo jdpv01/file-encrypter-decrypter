@@ -49,7 +49,7 @@ public class CryptoUtils {
         StringBuilder hexString = new StringBuilder(2 * content.length);
         for (int i = 0; i < content.length; i++) {
             String hex = Integer.toHexString(0xff & content[i]);
-            if(hex.length() == 1) {
+            if (hex.length() == 1) {
                 hexString.append('0');
             }
             hexString.append(hex);
