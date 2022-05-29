@@ -1,10 +1,13 @@
 package model;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
+import java.nio.file.StandardOpenOption;
+import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -18,8 +21,8 @@ public class AppImp implements App {
 
 	public byte[] encryptFile(String fileIn, String password) throws Exception {
         byte[] fileContent = Files.readAllBytes(Paths.get(fileIn));
-        byte[] encryptedText = encrypt(fileContent, password);
-        return encryptedText;
+        byte[] encryptedContent = encrypt(fileContent, password);
+        return encryptedContent;
     }
 	
 	private byte[] encrypt(byte[] fileContent, String password) throws Exception {
@@ -54,33 +57,34 @@ public class AppImp implements App {
         return plainText;
     }
 
-    /**
-    public String computeHash256() {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(originalString.getBytes(StandardCharsets.UTF_8));
-        StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
-        for (int i = 0; i < encodedhash.length; i++) {
-            String hex = Integer.toHexString(0xff & encodedhash[i]);
-            if(hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
+    public String getSHA256(String fileIn) throws NoSuchAlgorithmException, IOException {
+        String sha256 = CryptoUtils.computeSHA256(Files.readAllBytes(Paths.get(fileIn)));
+        return  sha256;
     }
-     */
+
+    public String getSHA1(String decryptedFile) throws NoSuchAlgorithmException, IOException {
+        String sha1 = CryptoUtils.computeSHA1(Files.readAllBytes(Paths.get(decryptedFile)));
+        return  sha1;
+    }
 
     public static void main(String[] args) throws Exception {
         String fileIn = "AESAVS.pdf";
         String fileOut = "AESAVS.pdf.enc";
         String decryptedFile = "decrypted"+fileOut.substring(0, fileOut.length()-4);
         String password = "123456";
-        App app = new AppImp();
+        AppImp app = new AppImp();
         try {
             Path path = Paths.get(fileOut);
             Files.write(path, app.encryptFile(fileIn, password));   
+            String sha256 = app.getSHA256(fileIn);
+            //Files.write(Paths.get(fileOut), sha256.getBytes(), StandardOpenOption.APPEND);
+
             path = Paths.get(decryptedFile);
-            Files.write(path, app.decryptFile(fileOut, password));  
+            Files.write(path, app.decryptFile(fileOut, password)); 
+            String sha1 = app.getSHA1(decryptedFile);
+
+            System.out.println(sha256);
+            System.out.println(sha1);
         } catch (Exception e) {
             e.printStackTrace();
         }   
