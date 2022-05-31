@@ -11,8 +11,6 @@ public interface MasterCrypt {
     public byte[] decryptFile(String encryptedFile, String password) throws Exception;
 
     public String getSHA256(String fileIn) throws NoSuchAlgorithmException, IOException;
-
-    public String getSHA1(String decryptedFile) throws NoSuchAlgorithmException, IOException;
-
+    
     public String init(File fileToCrypt, String password);
 }

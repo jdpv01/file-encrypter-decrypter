@@ -39,12 +39,6 @@ public class CryptoUtils {
         return hexToString(encodedhash);
     }
 
-    public static String computeSHA1(byte[] fileContent) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-1");
-        byte[] encodedhash = digest.digest(fileContent);
-        return hexToString(encodedhash);
-    }
-
     private static String hexToString(byte[] content) {
         StringBuilder hexString = new StringBuilder(2 * content.length);
         for (int i = 0; i < content.length; i++) {

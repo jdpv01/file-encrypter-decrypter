@@ -4,25 +4,33 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
-public class MasterCryptImp implements MasterCrypt {
+public class MasterCryptImp {
 
     private final String ENCRYPT_ALGORITHM = "AES/GCM/NoPadding";
     private final int TAG_LENGTH_BIT = 128;
     private final int IV_LENGTH_BYTE = 12;
     private final int SALT_LENGTH_BYTE = 16;
 
-    public byte[] encryptFile(String fileIn, String password) throws Exception {
-        byte[] fileContent = Files.readAllBytes(Paths.get(fileIn));
+    private String lastOriginalFileEncrypted;
+
+    public void encryptFile(File fileIn, String password) throws Exception {
+        byte[] fileContent = Files.readAllBytes(Paths.get(fileIn.getAbsolutePath()));
         byte[] encryptedContent = encrypt(fileContent, password);
-        return encryptedContent;
+
+        Files.write(Paths.get("out/" + fileIn.getName() + ".enc"), encryptedContent);
     }
 
     private byte[] encrypt(byte[] fileContent, String password) throws Exception {
@@ -37,12 +45,21 @@ public class MasterCryptImp implements MasterCrypt {
         return cipherTextWithIvSalt;
     }
 
-    public byte[] decryptFile(String encryptedFile, String password) throws Exception {
-        byte[] fileContent = Files.readAllBytes(Paths.get(encryptedFile));
-        return decrypt(fileContent, password);
+    public void decryptFile(File encryptedFile, String password)
+            throws IOException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        byte[] fileContent = Files.readAllBytes(Paths.get(encryptedFile.getAbsolutePath()));
+        byte[] decrypt = decrypt(fileContent, password);
+
+        Files.write(Paths.get("out/" + encryptedFile.getName().substring(0, encryptedFile.getName().length() - 4)),
+                decrypt);
+
     }
 
-    private byte[] decrypt(byte[] fileContent, String password) throws Exception {
+    private byte[] decrypt(byte[] fileContent, String password)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+
         ByteBuffer byteBuffer = ByteBuffer.wrap(fileContent);
         byte[] iv = new byte[IV_LENGTH_BYTE];
         byteBuffer.get(iv);
@@ -53,6 +70,7 @@ public class MasterCryptImp implements MasterCrypt {
         SecretKey aesKeyFromPassword = CryptoUtils.getAESKeyFromPassword(password.toCharArray(), salt, TAG_LENGTH_BIT);
         Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, aesKeyFromPassword, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
+
         byte[] plainText = cipher.doFinal(cipherText);
         return plainText;
     }
@@ -62,33 +80,19 @@ public class MasterCryptImp implements MasterCrypt {
         return sha256;
     }
 
-    public String getSHA1(String decryptedFile) throws NoSuchAlgorithmException, IOException {
-        String sha1 = CryptoUtils.computeSHA1(Files.readAllBytes(Paths.get(decryptedFile)));
-        return sha1;
+    public void startEncrypting(File fileToCrypt, String password) throws Exception {
+        lastOriginalFileEncrypted = fileToCrypt.getAbsolutePath();
+        encryptFile(fileToCrypt, password);
     }
 
-    public String init(File fileToCrypt, String password) {
-        String fileIn = fileToCrypt.getAbsolutePath();
-        String fileOut = fileIn + ".enc";
-        String decryptedFile = fileOut.substring(0, fileOut.length() - 4);
-        try {
-            Path path = Paths.get(fileOut);
-            Files.write(path, encryptFile(fileIn, password));
-            String sha256 = getSHA256(fileIn);
-            // Files.write(Paths.get(fileOut), sha256.getBytes(),
-            // StandardOpenOption.APPEND);
+    public String startDecrypt(File fileToDecrypt, String password) throws Exception {
+        decryptFile(fileToDecrypt, password);
 
-            path = Paths.get(decryptedFile);
-            Files.write(path, decryptFile(fileOut, password));
-            String sha1 = getSHA1(decryptedFile);
+        String resultMsg = "Archivo Original:\n" + getSHA256(lastOriginalFileEncrypted) + "\n"
+                + "Archivo Desencriptado:\n" + getSHA256(
+                        fileToDecrypt.getAbsolutePath().substring(0, fileToDecrypt.getAbsolutePath().length() - 4));
 
-            String result = "1. " + sha256 + "\n" + "2. " + sha1;
-
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        return resultMsg;
     }
+
 }

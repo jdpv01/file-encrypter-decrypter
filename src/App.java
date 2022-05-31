@@ -19,7 +19,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainWindow.fxml"));
-        MasterCrypt master = new MasterCryptImp();
+        MasterCryptImp master = new MasterCryptImp();
         MainController controller = new MainController(primaryStage, master);
         fxmlLoader.setController(controller);
 
