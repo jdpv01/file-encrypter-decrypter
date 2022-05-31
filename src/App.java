@@ -1,7 +1,6 @@
 import controller.MainController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,14 +32,11 @@ public class App extends Application {
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/view/logo.jpg")));
 
-
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent arg0) {
-				
+            public void handle(WindowEvent arg0) {
                 controller.renderCredits();
-
-			};
-		});
+            };
+        });
 
         primaryStage.show();
     }

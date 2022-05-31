@@ -1,8 +1,6 @@
 package controller;
 
 import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +27,12 @@ public class MainController {
     @FXML
     private PasswordField passwordTF;
 
+    @FXML
+    private Text resultMsg;
+
+    @FXML
+    private Text resultadoLabel;
+
     public MainController(Stage primaryStage, MasterCrypt master) {
         this.primaryStage = primaryStage;
         this.master = master;
@@ -36,6 +40,7 @@ public class MainController {
 
     @FXML
     void closeProgram(ActionEvent event) {
+        renderCredits();
         primaryStage.close();
     }
 
@@ -54,11 +59,9 @@ public class MainController {
             File fileToCrypt = fileChooser.showOpenDialog(primaryStage);
 
             if (fileToCrypt != null) {
-                Path origin = FileSystems.getDefault().getPath(fileToCrypt.getAbsolutePath());
-
-                System.out.println(fileToCrypt.getName());
-                System.out.println(passwordTF.getText());
-                master.init(fileToCrypt, passwordTF.getText());
+                resultMsg.setText(master.init(fileToCrypt, passwordTF.getText()));
+                resultMsg.setVisible(true);
+                resultadoLabel.setVisible(true);
 
                 openFileBtn.setDisable(false);
             }

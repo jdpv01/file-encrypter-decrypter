@@ -14,5 +14,5 @@ public interface MasterCrypt {
 
     public String getSHA1(String decryptedFile) throws NoSuchAlgorithmException, IOException;
 
-    public void init(File fileToCrypt, String password);
+    public String init(File fileToCrypt, String password);
 }

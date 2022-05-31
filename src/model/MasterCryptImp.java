@@ -67,7 +67,7 @@ public class MasterCryptImp implements MasterCrypt {
         return sha1;
     }
 
-    public void init(File fileToCrypt, String password) {
+    public String init(File fileToCrypt, String password) {
         String fileIn = fileToCrypt.getAbsolutePath();
         String fileOut = fileIn + ".enc";
         String decryptedFile = fileOut.substring(0, fileOut.length() - 4);
@@ -82,10 +82,13 @@ public class MasterCryptImp implements MasterCrypt {
             Files.write(path, decryptFile(fileOut, password));
             String sha1 = getSHA1(decryptedFile);
 
-            System.out.println(sha256);
-            System.out.println(sha1);
+            String result = "1. " + sha256 + "\n" + "2. " + sha1;
+
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return "";
     }
 }
