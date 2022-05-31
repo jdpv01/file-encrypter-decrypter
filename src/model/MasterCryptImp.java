@@ -68,9 +68,9 @@ public class MasterCryptImp implements MasterCrypt {
     }
 
     public void init(File fileToCrypt, String password) {
-        String fileIn = fileToCrypt.getName();
+        String fileIn = fileToCrypt.getAbsolutePath();
         String fileOut = fileIn + ".enc";
-        String decryptedFile = "decrypted" + fileOut.substring(0, fileOut.length() - 4);
+        String decryptedFile = fileOut.substring(0, fileOut.length() - 4);
         try {
             Path path = Paths.get(fileOut);
             Files.write(path, encryptFile(fileIn, password));

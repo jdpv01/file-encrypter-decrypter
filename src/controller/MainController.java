@@ -6,8 +6,10 @@ import java.nio.file.Path;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -55,9 +57,10 @@ public class MainController {
                 Path origin = FileSystems.getDefault().getPath(fileToCrypt.getAbsolutePath());
 
                 System.out.println(fileToCrypt.getName());
-
+                System.out.println(passwordTF.getText());
                 master.init(fileToCrypt, passwordTF.getText());
 
+                openFileBtn.setDisable(false);
             }
         } else {
             msgT.setVisible(true);
@@ -67,7 +70,17 @@ public class MainController {
 
     @FXML
     void showCredits(ActionEvent event) {
+        renderCredits();
+    }
 
+    public void renderCredits() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Icesi crypt");
+        alert.setHeaderText(null);
+        alert.setContentText(
+                "Gracias por usar Icesi Crypts\n\nDesarrolladores:\n    -Juan David Pelaez\n    -Jessica Daniela Otero\n    -Cristhian Camilo Gutierrez");
+
+        alert.showAndWait();
     }
 
 }
