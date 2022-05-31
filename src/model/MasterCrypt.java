@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
@@ -13,5 +14,5 @@ public interface MasterCrypt {
 
     public String getSHA1(String decryptedFile) throws NoSuchAlgorithmException, IOException;
 
-    public void init();
+    public void init(File fileToCrypt, String password);
 }

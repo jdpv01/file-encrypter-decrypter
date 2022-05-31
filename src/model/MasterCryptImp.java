@@ -1,11 +1,11 @@
 package model;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
@@ -67,11 +67,10 @@ public class MasterCryptImp implements MasterCrypt {
         return sha1;
     }
 
-    public void init() {
-        String fileIn = "AESAVS.pdf";
-        String fileOut = "AESAVS.pdf.enc";
+    public void init(File fileToCrypt, String password) {
+        String fileIn = fileToCrypt.getName();
+        String fileOut = fileIn + ".enc";
         String decryptedFile = "decrypted" + fileOut.substring(0, fileOut.length() - 4);
-        String password = "123456";
         try {
             Path path = Paths.get(fileOut);
             Files.write(path, encryptFile(fileIn, password));

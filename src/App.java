@@ -1,26 +1,34 @@
+import controller.MainController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.MasterCrypt;
 import model.MasterCryptImp;
 
 public class App extends Application {
     public static void main(String[] args) {
-        /*
-         * MasterCrypt master = new MasterCryptImp();
-         * master.init();
-         */
-
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Label l = new Label("CRYPTER");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) throws Exception {
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainWindow.fxml"));
+        MasterCrypt master = new MasterCryptImp();
+        fxmlLoader.setController(new MainController(primaryStage, master));
+
+        Parent root = fxmlLoader.load();
+
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Icesi crypter V0.1");
+        primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/view/logo.jpg")));
+
+        primaryStage.show();
     }
 }
