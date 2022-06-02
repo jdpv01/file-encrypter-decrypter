@@ -16,7 +16,7 @@ Programa para encriptación y desencriptación de archivos usando Estándar de C
 ![image](https://user-images.githubusercontent.com/38388199/171581208-c5758da5-c29d-487c-bfbb-c7986714e91a.png)
 
 * Ahora ingrese nuevamente la contraseña con la que encriptó el archivo original y seleccione `abrir` para escojer el archivo encriptado (.enc).
-* El archivo desencriptado se guarda en la misma ubicación del archivo encriptado con el prefijo `Decrypted`.
+* El archivo desencriptado se guarda en una carpeta `out` con el nombre del archivo original.
 
 ![image](https://user-images.githubusercontent.com/38388199/171581874-7bf6f4c1-3d7d-468b-9d4a-85c7f282e187.png)
 
