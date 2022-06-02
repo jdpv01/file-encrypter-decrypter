@@ -1,8 +1,8 @@
-## Getting Started
+## file-encrypter-decrypter
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Programa para encriptación y desencriptación de archivos usando Encriptación Estándar Avanzada (Advanced Encryption Standard o AES).
 
-## Folder Structure
+# Desarrollo
 
 The workspace contains two folders by default, where:
 
