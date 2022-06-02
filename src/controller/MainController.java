@@ -97,7 +97,7 @@ public class MainController {
         alert.setTitle("Icesi crypt");
         alert.setHeaderText(null);
         alert.setContentText(
-                "Gracias por usar Icesi Crypts\n\nDesarrolladores:\n    -Juan David Peláez\n    -Jessica Daniela Otero\n    -Cristhian Camilo Gutiérrez");
+                "Gracias por usar Icesi Crypts\n\nDesarrolladores:\n    -Juan David Pelï¿½ez\n    -Jessica Daniela Otero\n    -Cristhian Camilo Gutiï¿½rrez");
 
         alert.showAndWait();
     }
@@ -132,14 +132,18 @@ public class MainController {
 
                 } catch (AEADBadTagException e) {
 
-                    msgT.setText("La contraseña es incorrecta o el archivo ha sido modificado");
+                    msgT.setText("La contraseï¿½a es incorrecta o el archivo ha sido modificado");
+
+                    msgT.setStyle("color: red");
 
                     msgT.setVisible(true);
 
+                    resultMsg.setStyle("color: red");
+
                 } catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
             }
         } else {

@@ -1,3 +1,6 @@
+package application;
+import java.io.File;
+
 import controller.MainController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -10,8 +13,18 @@ import javafx.stage.WindowEvent;
 import model.MasterCryptImp;
 
 public class App extends Application {
+
+    public static File targetFolder = new File("out/");
+
     public static void main(String[] args) {
+
+        setup();
+
         launch(args);
+    }
+
+    private static void setup() {
+        targetFolder.mkdirs();
     }
 
     @Override

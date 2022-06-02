@@ -1,16 +1,19 @@
 package model;
 
+import application.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-//import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardOpenOption;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-//import java.util.Arrays;
+import java.util.Arrays;
+
+import javax.crypto.AEADBadTagException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -20,6 +23,7 @@ import javax.crypto.spec.GCMParameterSpec;
 
 public class MasterCryptImp {
 
+    private static final int EXTRA_SPACES_TO_FIRM = 65;
     private final String ENCRYPT_ALGORITHM = "AES/GCM/NoPadding";
     private final int TAG_LENGTH_BIT = 128;
     private final int IV_LENGTH_BYTE = 12;
@@ -29,10 +33,15 @@ public class MasterCryptImp {
 
     public void encryptFile(File fileIn, String password) throws Exception {
         byte[] fileContent = Files.readAllBytes(Paths.get(fileIn.getAbsolutePath()));
-//        System.out.println(fileContent.length);
+
         byte[] encryptedContent = encrypt(fileContent, password);
-        Files.write(Paths.get(fileIn.getAbsolutePath() + ".enc"), encryptedContent);
-//        Files.write(Paths.get(fileIn.getAbsolutePath() + ".enc"), ("\n"+getSHA256(fileIn.getAbsolutePath())).getBytes(), StandardOpenOption.APPEND);
+
+        Files.write(Paths.get(App.targetFolder.getAbsolutePath() + "/" + fileIn.getName() + ".enc"),
+                encryptedContent);
+
+        Files.write(Paths.get(App.targetFolder.getAbsolutePath() + "/" + fileIn.getName() + ".enc"),
+                ("\n" + getSHA256(fileIn.getAbsolutePath())).getBytes(), StandardOpenOption.APPEND);
+
     }
 
     private byte[] encrypt(byte[] fileContent, String password) throws Exception {
@@ -50,15 +59,15 @@ public class MasterCryptImp {
     public void decryptFile(File encryptedFile, String password)
             throws IOException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-    	
+
         byte[] fileContent = Files.readAllBytes(Paths.get(encryptedFile.getAbsolutePath()));
-//        System.out.println(fileContent.length);
-//        fileContent = Arrays.copyOf(fileContent, fileContent.length-109);
-//        System.out.println(fileContent.length);
+        System.out.println(fileContent.length);
+        fileContent = Arrays.copyOf(fileContent, fileContent.length - EXTRA_SPACES_TO_FIRM);
+        System.out.println(fileContent.length);
         byte[] decrypt = decrypt(fileContent, password);
-        Files.write(Paths.get(encryptedFile.getAbsolutePath().substring(0, encryptedFile.getAbsolutePath().length() - 
-        		encryptedFile.getName().length()) + "Decrypted"+ encryptedFile.getName().substring(0, encryptedFile.getName().length()-4))
-        		, decrypt);
+        Files.write(
+                Paths.get(encryptedFile.getAbsolutePath().substring(0, encryptedFile.getAbsolutePath().length() - 4)),
+                decrypt);
     }
 
     private byte[] decrypt(byte[] fileContent, String password)
@@ -93,9 +102,16 @@ public class MasterCryptImp {
     public String startDecrypt(File fileToDecrypt, String password) throws Exception {
         decryptFile(fileToDecrypt, password);
 
-        String resultMsg = "Archivo Original:\n" + getSHA256(lastOriginalFileEncrypted) + "\n"
-                + "Archivo Desencriptado:\n" + getSHA256(
-                        fileToDecrypt.getAbsolutePath().substring(0, fileToDecrypt.getAbsolutePath().length() - 4));
+        String shaA = getSHA256(lastOriginalFileEncrypted);
+        String shaB = getSHA256(
+                fileToDecrypt.getAbsolutePath().substring(0, fileToDecrypt.getAbsolutePath().length() - 4));
+
+        if (!shaA.equals(shaB)) {
+            throw new AEADBadTagException();
+        }
+
+        String resultMsg = "Archivo Original:\n" + shaA + "\n"
+                + "Archivo Desencriptado:\n" + shaB;
 
         return resultMsg;
     }
