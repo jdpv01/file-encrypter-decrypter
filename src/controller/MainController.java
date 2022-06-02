@@ -132,7 +132,7 @@ public class MainController {
 
                 } catch (AEADBadTagException e) {
 
-                    msgT.setText("La contrase�a es incorrecta o el archivo ha sido modificado");
+                    msgT.setText("La contraseña es incorrecta o el archivo ha sido modificado");
 
                     msgT.setStyle("color: red");
 
@@ -141,7 +141,6 @@ public class MainController {
                     resultMsg.setStyle("color: red");
 
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
