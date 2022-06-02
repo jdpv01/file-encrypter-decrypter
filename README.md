@@ -4,7 +4,7 @@ Programa para encriptación y desencriptación de archivos usando Estándar de C
 
 ## Desarrollo:
 
-> El programa de desarrolló usando Java versión 8 (LTS) con JavaFX. Para las utilidades y operaciones criptográficas, se utilizó el paquete javax.crypto. El programa no permite guardar el hash SHA256 del archivo original en el archivo encriptado porque modificaría el archivo encriptado. Si el archivo encriptado es modificado, el algoritmo AES no puede validar el archivo. No obstante, es posible recuperar el SHA256 del archivo original antes de guardar el archivo encriptado, y posteriormente, compararlo con el SHA256 del archivo desencriptado.
+> El programa de desarrolló usando Java versión 8 (LTS) con JavaFX. Para las utilidades y operaciones criptográficas, se utilizó el paquete javax.crypto. El programa permite guardar el hash SHA256 del archivo original en el archivo encriptado. Si el archivo encriptado es modificado, el algoritmo AES no puede validar el archivo. No obstante, es posible recuperar el SHA256 del archivo encriptado, y posteriormente, compararlo con el SHA256 del archivo desencriptado.
 
 ## Cómo usar:
 
